@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#8b5cc4"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Crochê App"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="icon" type="image/png" href="assets/icon-192.png"/>
+<link rel="apple-touch-icon" href="assets/icon-192.png"/>
+<meta name="description" content="App de receitas e gráficos de crochê em português com passo a passo interativo"/>
+<title>🧶 Crochê App – Receitas e Passo a Passo</title>
+<style>
+/* === RESET & BASE === */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;transition:background .3s,color .3s}
+
+/* === CSS VARIABLES === */
+:root{
+  --ac:#8b5cc4;--ac2:#a67dd4;--ac3:#6a3fa0;
+  --bg:#f5f0ff;--bg2:#ede5ff;--card:#ffffff;
+  --tx:#1a1025;--tx2:#5a4070;--tx3:#8b7aaa;
+  --bd:#d8cef0;--danger:#e05252;--success:#52a880;
+  --warn:#e09052;--star:#f0b429;
+  --shadow:0 2px 12px rgba(139,92,196,.15);
+  --shadow2:0 4px 24px rgba(139,92,196,.22);
+  --radius:16px;--radius-sm:10px;--radius-xs:6px;
+  --nav-h:64px;--safe-b:env(safe-area-inset-bottom,0px);
+}
+[data-theme="dark"]{
+  --bg:#0f0a1a;--bg2:#1a1025;--card:#1e1530;
+  --tx:#f0eaff;--tx2:#c4b0e8;--tx3:#8b7aaa;
+  --bd:#2e2048;--shadow:0 2px 12px rgba(0,0,0,.4);
+  --shadow2:0 4px 24px rgba(0,0,0,.5);
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f0a1a;--bg2:#1a1025;--card:#1e1530;
+    --tx:#f0eaff;--tx2:#c4b0e8;--tx3:#8b7aaa;
+    --bd:#2e2048;--shadow:0 2px 12px rgba(0,0,0,.4);
+    --shadow2:0 4px 24px rgba(0,0,0,.5);
+  }
+}
+
+/* === LAYOUT === */
+#app{display:flex;flex-direction:column;min-height:100vh}
+.main-content{flex:1;padding:16px 16px calc(var(--nav-h) + var(--safe-b) + 16px);max-width:680px;margin:0 auto;width:100%}
+.page{display:none}.page.active{display:block}
+
+/* === BOTTOM NAV === */
+.bottomnav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--card);border-top:1px solid var(--bd);
+  display:flex;justify-content:space-around;align-items:center;
+  padding:8px 0;padding-bottom:max(8px,var(--safe-b));
+  z-index:100;box-shadow:0 -2px 12px rgba(139,92,196,.1);
+}
+.nav-btn{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  background:none;border:none;cursor:pointer;color:var(--tx3);
+  font-size:11px;font-weight:500;padding:4px 12px;border-radius:var(--radius-sm);
+  transition:color .2s,transform .15s;min-width:52px;
+}
+.nav-btn .nav-icon{font-size:22px;transition:transform .2s}
+.nav-btn.active{color:var(--ac)}
+.nav-btn.active .nav-icon{transform:translateY(-2px)}
+.nav-btn:hover{color:var(--ac2)}
+
+/* === HEADER === */
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:8px}
+.page-title{font-size:1.5rem;font-weight:700;color:var(--tx)}
+.page-subtitle{font-size:.9rem;color:var(--tx3);margin-bottom:16px}
+
+/* === CARDS === */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px;transition:box-shadow .2s,transform .2s;border:1px solid var(--bd)}
+.card:hover{box-shadow:var(--shadow2);transform:translateY(-1px)}
+.card-sm{padding:12px}
+.card-flat{box-shadow:none;border:1px solid var(--bd)}
+
+/* === BUTTONS === */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-size:.9rem;font-weight:600;transition:all .2s;line-height:1}
+.btn-primary{background:var(--ac);color:#fff}
+.btn-primary:hover{background:var(--ac3)}
+.btn-outline{background:transparent;color:var(--ac);border:2px solid var(--ac)}
+.btn-outline:hover{background:var(--ac);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover{opacity:.85}
+.btn-sm{padding:7px 14px;font-size:.82rem}
+.btn-icon{padding:8px;border-radius:50%;background:var(--bg2);border:none;cursor:pointer;font-size:18px;transition:all .2s;color:var(--tx)}
+.btn-icon:hover{background:var(--ac);color:#fff}
+
+/* === INPUTS === */
+.input{width:100%;padding:12px 16px;border:1.5px solid var(--bd);border-radius:var(--radius-sm);background:var(--card);color:var(--tx);font-size:.95rem;outline:none;transition:border-color .2s}
+.input:focus{border-color:var(--ac)}
+.input-wrap{position:relative;margin-bottom:12px}
+.input-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:18px}
+.input-icon+.input{padding-left:42px}
+.textarea{resize:vertical;min-height:80px;line-height:1.5}
+
+/* === BADGES & TAGS === */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;gap:4px}
+.badge-purple{background:var(--bg2);color:var(--ac)}
+.badge-green{background:#e8f5ee;color:#2d7a4f}
+.badge-orange{background:#fff3e5;color:#c06020}
+.badge-red{background:#fde8e8;color:#c03030}
+.badge-blue{background:#e5eeff;color:#2050c0}
+[data-theme="dark"] .badge-green{background:#1a3a2a;color:#5ac880}
+[data-theme="dark"] .badge-orange{background:#2a1800;color:#d08040}
+[data-theme="dark"] .badge-red{background:#2a1010;color:#d06060}
+[data-theme="dark"] .badge-blue{background:#101a2a;color:#5080d0}
+.tag{background:var(--bg2);color:var(--tx2);padding:2px 8px;border-radius:12px;font-size:.72rem;font-weight:500}
+
+/* === STARS === */
+.stars{color:var(--star);letter-spacing:1px}
+
+/* === SEARCH & FILTER === */
+.search-bar{position:relative;margin-bottom:12px}
+.search-bar .input{padding-left:44px}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:20px;pointer-events:none}
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-chip{white-space:nowrap;padding:7px 14px;border-radius:20px;border:1.5px solid var(--bd);background:var(--card);color:var(--tx2);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s}
+.filter-chip.active{background:var(--ac);color:#fff;border-color:var(--ac)}
+.filter-chip:hover:not(.active){border-color:var(--ac);color:var(--ac)}
+
+/* === RECIPE CARD === */
+.recipe-card{cursor:pointer;position:relative;overflow:hidden}
+.recipe-card-inner{display:flex;gap:12px;align-items:flex-start}
+.recipe-emoji{font-size:2.5rem;line-height:1;flex-shrink:0;width:52px;height:52px;display:flex;align-items:center;justify-content:center;background:var(--bg2);border-radius:var(--radius-sm)}
+.recipe-info{flex:1;min-width:0}
+.recipe-name{font-size:1rem;font-weight:700;color:var(--tx);margin-bottom:4px}
+.recipe-desc{font-size:.82rem;color:var(--tx3);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:6px}
+.recipe-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.recipe-fav{position:absolute;top:14px;right:14px;font-size:22px;cursor:pointer;transition:transform .2s}
+.recipe-fav:hover{transform:scale(1.3)}
+.recipe-progress-bar{height:4px;background:var(--bd);border-radius:2px;margin-top:8px;overflow:hidden}
+.recipe-progress-fill{height:100%;background:var(--ac);border-radius:2px;transition:width .4s}
+
+/* === RECIPE DETAIL === */
+.recipe-detail{display:none}.recipe-detail.active{display:block}
+.back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;color:var(--ac);font-size:.95rem;font-weight:600;padding:0;margin-bottom:16px;transition:gap .2s}
+.back-btn:hover{gap:10px}
+.detail-header{text-align:center;padding:20px 0 12px}
+.detail-emoji{font-size:4rem;display:block;margin-bottom:8px}
+.detail-title{font-size:1.6rem;font-weight:800;color:var(--tx);margin-bottom:8px}
+.detail-badges{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:12px}
+.detail-time{color:var(--tx3);font-size:.88rem}
+.section-title{font-size:1rem;font-weight:700;color:var(--tx);margin:16px 0 10px;display:flex;align-items:center;gap:6px}
+.mat-list{list-style:none}
+.mat-list li{padding:6px 0;border-bottom:1px solid var(--bd);font-size:.88rem;color:var(--tx2);display:flex;align-items:center;gap:8px}
+.mat-list li::before{content:"🧵";font-size:14px}
+.mat-list li:last-child{border:none}
+.step-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px dashed var(--bd);align-items:flex-start}
+.step-item:last-child{border:none}
+.step-cb{flex-shrink:0;width:22px;height:22px;border-radius:6px;border:2px solid var(--bd);background:var(--card);cursor:pointer;appearance:none;-webkit-appearance:none;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.step-cb:checked{background:var(--ac);border-color:var(--ac)}
+.step-cb:checked::after{content:"✓";color:#fff;font-size:13px;display:block;text-align:center;line-height:1}
+.step-text{font-size:.88rem;color:var(--tx2);flex:1;line-height:1.5}
+.step-text.done{text-decoration:line-through;color:var(--tx3)}
+.step-pts{font-size:.78rem;color:var(--ac);font-weight:600;white-space:nowrap}
+.tip-box{background:var(--bg2);border-left:4px solid var(--ac);border-radius:var(--radius-xs);padding:12px 14px;font-size:.88rem;color:var(--tx2);margin:12px 0;line-height:1.5}
+.warn-box{background:#fff3e5;border-left:4px solid var(--warn);border-radius:var(--radius-xs);padding:12px 14px;font-size:.88rem;color:#854400;margin:12px 0}
+[data-theme="dark"] .warn-box{background:#2a1800;color:#e0a060}
+.notes-area{width:100%;min-height:100px;padding:12px;border:1.5px solid var(--bd);border-radius:var(--radius-sm);background:var(--card);color:var(--tx);font-size:.88rem;resize:vertical;outline:none;line-height:1.5;transition:border-color .2s}
+.notes-area:focus{border-color:var(--ac)}
+
+/* === COUNTER === */
+.counter-display{text-align:center;padding:24px 0}
+.counter-label{font-size:.85rem;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.counter-num{font-size:4.5rem;font-weight:800;color:var(--ac);line-height:1;font-variant-numeric:tabular-nums}
+.counter-row{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:20px}
+.counter-btn{width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;font-size:28px;font-weight:700;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.counter-btn.plus{background:var(--ac);color:#fff}
+.counter-btn.plus:hover{background:var(--ac3);transform:scale(1.08)}
+.counter-btn.minus{background:var(--bd);color:var(--tx);border:2px solid var(--bd)}
+.counter-btn.minus:hover{background:var(--danger);color:#fff;border-color:var(--danger);transform:scale(1.08)}
+.counter-divider{width:1px;height:60px;background:var(--bd);margin:0 8px}
+.history-list{list-style:none}
+.history-list li{padding:8px 12px;background:var(--bg2);border-radius:var(--radius-xs);margin-bottom:6px;font-size:.85rem;color:var(--tx2);display:flex;justify-content:space-between}
+
+/* === GLOSSARY === */
+.gloss-item{padding:12px 0;border-bottom:1px solid var(--bd)}
+.gloss-item:last-child{border:none}
+.gloss-abbr{font-size:1.1rem;font-weight:800;color:var(--ac)}
+.gloss-name{font-size:.92rem;font-weight:600;color:var(--tx);margin:2px 0}
+.gloss-en{font-size:.8rem;color:var(--tx3);margin-bottom:4px}
+.gloss-desc{font-size:.84rem;color:var(--tx2);line-height:1.5}
+
+/* === TUTORIAL === */
+.tutorial-step{display:flex;gap:12px;padding:12px 0;border-bottom:1px dashed var(--bd)}
+.tutorial-step:last-child{border:none}
+.tutorial-num{width:30px;height:30px;border-radius:50%;background:var(--ac);color:#fff;font-weight:700;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tutorial-text{font-size:.88rem;color:var(--tx2);line-height:1.6;flex:1}
+
+/* === CALC === */
+.calc-result{background:var(--bg2);border-radius:var(--radius-sm);padding:16px;margin-top:12px;text-align:center}
+.calc-result-num{font-size:2rem;font-weight:800;color:var(--ac)}
+.calc-result-label{font-size:.85rem;color:var(--tx3)}
+
+/* === SETTINGS === */
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--bd)}
+.setting-row:last-child{border:none}
+.setting-label{font-size:.95rem;color:var(--tx);font-weight:500}
+.setting-sub{font-size:.8rem;color:var(--tx3);margin-top:2px}
+.toggle{width:48px;height:26px;border-radius:13px;background:var(--bd);border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.toggle.on{background:var(--ac)}.toggle.on::after{transform:translateX(22px)}
+
+/* === EMPTY STATE === */
+.empty{text-align:center;padding:48px 16px;color:var(--tx3)}
+.empty-icon{font-size:3.5rem;margin-bottom:12px}
+.empty-text{font-size:1rem;font-weight:600;margin-bottom:6px;color:var(--tx2)}
+.empty-sub{font-size:.85rem}
+
+/* === LINKS === */
+.link-card{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card);border-radius:var(--radius-sm);border:1px solid var(--bd);text-decoration:none;color:var(--tx);margin-bottom:8px;transition:all .2s}
+.link-card:hover{border-color:var(--ac);box-shadow:var(--shadow)}
+.link-icon{font-size:1.6rem;flex-shrink:0}
+.link-text{flex:1}
+.link-name{font-weight:700;font-size:.92rem}
+.link-url{font-size:.78rem;color:var(--tx3)}
+
+/* === SECTION ACCORDION === */
+.accordion-btn{width:100%;background:var(--bg2);border:1px solid var(--bd);border-radius:var(--radius-sm);padding:12px 16px;text-align:left;cursor:pointer;font-size:.95rem;font-weight:600;color:var(--tx);display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;transition:background .2s}
+.accordion-btn:hover{background:var(--bd)}
+.accordion-btn .arrow{transition:transform .2s}
+.accordion-btn.open .arrow{transform:rotate(180deg)}
+.accordion-body{display:none;padding:4px 0 8px}
+.accordion-body.open{display:block}
+
+/* === PROGRESS OVERVIEW === */
+.progress-overall{height:8px;background:var(--bd);border-radius:4px;overflow:hidden;margin:8px 0}
+.progress-overall-fill{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));border-radius:4px;transition:width .5s}
+
+/* === CHIP GROUP === */
+.chip-group{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+
+/* === ANIMATIONS === */
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.animate-slide{animation:slideUp .3s ease forwards}
+.animate-fade{animation:fadeIn .3s ease forwards}
+
+/* === SCROLLBAR === */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--ac)}
+
+/* === HERO BANNER === */
+.hero{background:linear-gradient(135deg,var(--ac) 0%,var(--ac2) 100%);border-radius:var(--radius);padding:20px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden}
+.hero::after{content:'🧶';position:absolute;right:-10px;bottom:-10px;font-size:80px;opacity:.2;transform:rotate(-15deg)}
+.hero-title{font-size:1.3rem;font-weight:800;margin-bottom:4px}
+.hero-sub{font-size:.88rem;opacity:.88}
+
+/* === DIVIDER === */
+.divider{height:1px;background:var(--bd);margin:16px 0}
+
+/* === SORT SELECT === */
+.sort-select{padding:8px 12px;border:1.5px solid var(--bd);border-radius:var(--radius-sm);background:var(--card);color:var(--tx);font-size:.85rem;outline:none;cursor:pointer}
+.sort-select:focus{border-color:var(--ac)}
+
+/* === GRID 2 COLS === */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* === TABS === */
+.tab-row{display:flex;gap:4px;background:var(--bg2);border-radius:var(--radius-sm);padding:4px;margin-bottom:16px}
+.tab-btn{flex:1;padding:8px;border-radius:calc(var(--radius-sm) - 2px);border:none;background:none;cursor:pointer;font-size:.82rem;font-weight:600;color:var(--tx3);transition:all .2s}
+.tab-btn.active{background:var(--card);color:var(--ac);box-shadow:var(--shadow)}
+
+/* safe area top */
+.safe-top{padding-top:max(12px,env(safe-area-inset-top,0px))}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ====== BOTTOM NAV ====== -->
+<nav class="bottomnav" id="bottomNav">
+  <button class="nav-btn active" data-page="home" onclick="goPage('home',this)">
+    <span class="nav-icon">🏠</span><span>Início</span>
+  </button>
+  <button class="nav-btn" data-page="recipes" onclick="goPage('recipes',this)">
+    <span class="nav-icon">📖</span><span>Receitas</span>
+  </button>
+  <button class="nav-btn" data-page="stitches" onclick="goPage('stitches',this)">
+    <span class="nav-icon">🧶</span><span>Pontos</span>
+  </button>
+  <button class="nav-btn" data-page="counter" onclick="goPage('counter',this)">
+    <span class="nav-icon">🔢</span><span>Contador</span>
+  </button>
+  <button class="nav-btn" data-page="more" onclick="goPage('more',this)">
+    <span class="nav-icon">⚙️</span><span>Mais</span>
+  </button>
+</nav>
+
+<!-- ====== MAIN CONTENT ====== -->
+<main class="main-content safe-top">
+
+<!-- ============ HOME PAGE ============ -->
+<div id="page-home" class="page active animate-slide">
+  <div class="hero">
+    <div class="hero-title">🧶 Crochê App</div>
+    <div class="hero-sub">Suas receitas favoritas, sempre à mão</div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-bottom:12px">
+    <div class="tab-btn active" id="tab-all-home" onclick="switchHomeTab('all')" style="flex:1;padding:8px;border-radius:var(--radius-sm);border:none;background:var(--ac);color:#fff;cursor:pointer;font-size:.82rem;font-weight:600">Todas</div>
+    <div class="tab-btn" id="tab-fav-home" onclick="switchHomeTab('fav')" style="flex:1;padding:8px;border-radius:var(--radius-sm);border:1.5px solid var(--bd);background:var(--card);color:var(--tx3);cursor:pointer;font-size:.82rem;font-weight:600">❤️ Favoritas</div>
+    <div class="tab-btn" id="tab-prog-home" onclick="switchHomeTab('prog')" style="flex:1;padding:8px;border-radius:var(--radius-sm);border:1.5px solid var(--bd);background:var(--card);color:var(--tx3);cursor:pointer;font-size:.82rem;font-weight:600">▶ Em andamento</div>
+  </div>
+
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input class="input" type="search" id="searchHome" placeholder="Buscar receitas..." oninput="renderHome()"/>
+  </div>
+
+  <div class="filter-row" id="filterLevel">
+    <button class="filter-chip active" data-val="" onclick="setFilter('level','',this)">Todos</button>
+    <button class="filter-chip" data-val="Iniciante" onclick="setFilter('level','Iniciante',this)">🟢 Iniciante</button>
+    <button class="filter-chip" data-val="Intermediário" onclick="setFilter('level','Intermediário',this)">🟡 Intermediário</button>
+    <button class="filter-chip" data-val="Avançado" onclick="setFilter('level','Avançado',this)">🔴 Avançado</button>
+  </div>
+
+  <div class="filter-row" id="filterCat">
+    <button class="filter-chip active" data-val="" onclick="setFilter('cat','',this)">Todas categorias</button>
+    <button class="filter-chip" data-val="Amigurumi" onclick="setFilter('cat','Amigurumi',this)">🐻 Amigurumi</button>
+    <button class="filter-chip" data-val="Bebê" onclick="setFilter('cat','Bebê',this)">👶 Bebê</button>
+    <button class="filter-chip" data-val="Acessórios" onclick="setFilter('cat','Acessórios',this)">👜 Acessórios</button>
+    <button class="filter-chip" data-val="Casa" onclick="setFilter('cat','Casa',this)">🏠 Casa</button>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <span id="homeCount" style="font-size:.82rem;color:var(--tx3)"></span>
+    <select class="sort-select" id="sortHome" onchange="renderHome()">
+      <option value="default">Ordem padrão</option>
+      <option value="az">A → Z</option>
+      <option value="level">Por nível</option>
+      <option value="fav">Favoritos primeiro</option>
+    </select>
+  </div>
+
+  <div id="homeList"></div>
+</div>
+
+<!-- ============ RECIPES PAGE ============ -->
+<div id="page-recipes" class="page animate-slide">
+  <div id="recipes-list-view">
+    <div class="page-header">
+      <span class="page-title">📖 Receitas</span>
+    </div>
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input class="input" type="search" id="searchRec" placeholder="Buscar receitas..." oninput="renderRecipes()"/>
+    </div>
+    <div id="recipesList"></div>
+  </div>
+  <div id="recipes-detail-view" class="recipe-detail">
+    <button class="back-btn" onclick="closeDetail()">← Voltar</button>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<!-- ============ STITCHES PAGE ============ -->
+<div id="page-stitches" class="page animate-slide">
+  <div class="page-header"><span class="page-title">🧶 Pontos</span></div>
+
+  <div class="tab-row" style="margin-bottom:12px">
+    <button class="tab-btn active" id="stitch-tab-gloss" onclick="switchStitchTab('gloss',this)">Glossário</button>
+    <button class="tab-btn" id="stitch-tab-tut" onclick="switchStitchTab('tut',this)">Tutoriais</button>
+  </div>
+
+  <div id="stitch-gloss">
+    <div class="search-bar" style="margin-bottom:12px">
+      <span class="search-icon">🔍</span>
+      <input class="input" type="search" id="searchGloss" placeholder="Buscar ponto..." oninput="renderGloss()"/>
+    </div>
+    <div id="glossList" class="card card-flat"></div>
+  </div>
+
+  <div id="stitch-tut" style="display:none">
+    <div id="tutContent"></div>
+  </div>
+</div>
+
+<!-- ============ COUNTER PAGE ============ -->
+<div id="page-counter" class="page animate-slide">
+  <div class="page-header"><span class="page-title">🔢 Contador</span></div>
+
+  <div class="card" style="margin-bottom:12px">
+    <input class="input" id="counterRecipeName" type="text" placeholder="📝 Nome da receita (opcional)" style="margin-bottom:0"/>
+  </div>
+
+  <div class="card">
+    <div class="counter-display">
+      <div class="counter-label">Pontos na volta</div>
+      <div class="counter-num" id="stitchCount">0</div>
+    </div>
+    <div class="counter-row">
+      <button class="counter-btn minus" onclick="counterAdjust('stitch',-1)">−</button>
+      <div class="counter-divider"></div>
+      <button class="counter-btn plus" onclick="counterAdjust('stitch',1)">+</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="counter-display">
+      <div class="counter-label">Voltas completadas</div>
+      <div class="counter-num" id="rowCount">0</div>
+    </div>
+    <div class="counter-row">
+      <button class="counter-btn minus" onclick="counterAdjust('row',-1)">−</button>
+      <div class="counter-divider"></div>
+      <button class="counter-btn plus" onclick="counterAdjust('row',1)">+</button>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn btn-outline btn-sm" style="flex:1" onclick="completeRow()">✅ Completar volta</button>
+      <button class="btn btn-danger btn-sm" style="flex:1" onclick="resetCounter()">🔄 Zerar</button>
+    </div>
+  </div>
+
+  <div class="section-title">🕐 Histórico de voltas</div>
+  <div class="card card-flat">
+    <ul class="history-list" id="counterHistory"><li style="color:var(--tx3);font-size:.85rem;padding:8px">Nenhuma volta completada ainda.</li></ul>
+  </div>
+</div>
+
+<!-- ============ MORE PAGE ============ -->
+<div id="page-more" class="page animate-slide">
+  <div class="page-header"><span class="page-title">⚙️ Mais</span></div>
+
+  <div class="tab-row">
+    <button class="tab-btn active" id="more-tab-calc" onclick="switchMoreTab('calc',this)">🧮 Calculadora</button>
+    <button class="tab-btn" id="more-tab-links" onclick="switchMoreTab('links',this)">🔗 Links</button>
+    <button class="tab-btn" id="more-tab-settings" onclick="switchMoreTab('settings',this)">⚙️ Config</button>
+  </div>
+
+  <!-- CALCULATOR -->
+  <div id="more-calc">
+    <div class="card">
+      <div class="section-title">🧮 Calculadora de Material</div>
+      <label style="font-size:.85rem;color:var(--tx3);display:block;margin-bottom:4px">Peso do novelo (g)</label>
+      <input class="input" id="calcWeight" type="number" placeholder="ex: 100" style="margin-bottom:10px"/>
+      <label style="font-size:.85rem;color:var(--tx3);display:block;margin-bottom:4px">Metragem do novelo (m)</label>
+      <input class="input" id="calcMeters" type="number" placeholder="ex: 200" style="margin-bottom:10px"/>
+      <label style="font-size:.85rem;color:var(--tx3);display:block;margin-bottom:4px">Metros estimados para o projeto (m)</label>
+      <input class="input" id="calcProject" type="number" placeholder="ex: 350" style="margin-bottom:12px"/>
+      <button class="btn btn-primary" style="width:100%" onclick="calcMaterial()">Calcular</button>
+      <div id="calcResult"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="section-title">📏 Referência de fios comuns</div>
+      <div id="yarnRef"></div>
+    </div>
+  </div>
+
+  <!-- LINKS -->
+  <div id="more-links" style="display:none">
+    <div class="section-title">📚 Sites e Referências</div>
+    <div id="linksList"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="more-settings" style="display:none">
+    <div class="card">
+      <div class="section-title">⚙️ Configurações</div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Tema escuro</div>
+          <div class="setting-sub">Alternativa ao tema claro</div>
+        </div>
+        <button class="toggle" id="darkToggle" onclick="toggleDark()"></button>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Apagar todos os dados</div>
+          <div class="setting-sub">Remove favoritos, progresso e notas</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="clearAllData()">Apagar</button>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Versão do app</div>
+          <div class="setting-sub">Crochê App v2.0</div>
+        </div>
+        <span class="badge badge-purple">v2.0</span>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="section-title">📊 Suas estatísticas</div>
+      <div id="statsContent"></div>
+    </div>
+  </div>
+</div>
+
+</main><!-- /main-content -->
+</div><!-- /app -->
+
+<!-- Modal Zoom de Imagem/Gráfico -->
+<div id="imageModal" onclick="closeImageModal()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);z-index:9999;align-items:center;justify-content:center;padding:16px;touch-action:pinch-zoom">
+  <div style="position:relative;max-width:96vw;max-height:92vh;display:flex;flex-direction:column;align-items:center" onclick="event.stopPropagation()">
+    <button onclick="closeImageModal()" style="position:absolute;top:-40px;right:0;background:rgba(255,255,255,0.3);color:#fff;border:none;font-size:24px;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+    <img id="modalImage" src="" alt="Zoom" style="max-width:100%;max-height:82vh;border-radius:12px;object-fit:contain;box-shadow:0 8px 30px rgba(0,0,0,0.6);background:#fff"/>
+    <span style="color:#fff;font-size:0.85rem;margin-top:10px;opacity:0.85">Toque fora ou no ✕ para fechar</span>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="data.js"></script>
+<script src="diagrams.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

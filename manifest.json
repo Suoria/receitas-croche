@@ -1,0 +1,23 @@
+{
+  "name": "Receitas de Crochê - Passo a Passo",
+  "short_name": "Crochê App",
+  "description": "Aplicativo de receitas e gráficos de crochê com passo a passo interativo e contador de voltas",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#faf6fc",
+  "theme_color": "#8b5cc4",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
