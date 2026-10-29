@@ -76,7 +76,7 @@ var state = {
 // =============================================
 // NAVIGATION
 // =============================================
-function goPage(page, btn) {
+function goPage(page, btn, fromHistory) {
   if (state.openRecipe && page !== 'recipes') {
     state.openRecipe = null;
   }
@@ -91,6 +91,12 @@ function goPage(page, btn) {
   }
   window.scrollTo(0,0);
   renderPage(page);
+
+  if (!fromHistory) {
+    try {
+      history.pushState({ page: page }, '', '#' + page);
+    } catch(e) {}
+  }
 }
 
 function renderPage(page) {
@@ -227,26 +233,40 @@ function recipeCardHTMLR(r) {
     '</div></div></div>';
 }
 
-function openRecipeFromList(rid) {
+function openRecipeFromList(rid, fromHistory) {
   state.openRecipe = rid;
   showDetail(rid);
   document.getElementById('recipes-list-view').style.display = 'none';
   document.getElementById('recipes-detail-view').classList.add('active');
+  if (!fromHistory) {
+    try {
+      history.pushState({ view: 'detail', recipeId: rid }, '', '#recipe-' + rid);
+    } catch(e) {}
+  }
 }
 
 function openRecipe(rid) {
   state.openRecipe = rid;
-  goPage('recipes', null);
-  setTimeout(function(){
-    openRecipeFromList(rid);
-  }, 50);
+  goPage('recipes', null, true);
+  openRecipeFromList(rid, false);
 }
 
-function closeDetail() {
+function handleBackAction() {
+  if (window.location.hash && window.location.hash.indexOf('#recipe-') === 0) {
+    history.back();
+  } else {
+    closeDetail(true);
+  }
+}
+
+function closeDetail(fromHistory) {
   state.openRecipe = null;
   document.getElementById('recipes-list-view').style.display = 'block';
   document.getElementById('recipes-detail-view').classList.remove('active');
   renderRecipes();
+  if (!fromHistory && window.location.hash && window.location.hash.indexOf('#recipe-') === 0) {
+    try { history.back(); } catch(e) {}
+  }
 }
 
 function showDetail(rid) {
@@ -604,7 +624,7 @@ function saveNoteLocal(rid) {
   if (el) setNotes(rid, el.value);
 }
 
-function openImageModal(src, isSvgHtml) {
+function openImageModal(src, isSvgHtml, fromHistory) {
   var m = document.getElementById('imageModal');
   var mi = document.getElementById('modalImage');
   var mc = document.getElementById('modalSvgContainer');
@@ -628,6 +648,11 @@ function openImageModal(src, isSvgHtml) {
     }
   }
   m.style.display = 'flex';
+  if (!fromHistory) {
+    try {
+      history.pushState({ modal: 'zoom' }, '', '#zoom');
+    } catch(e) {}
+  }
 }
 
 function openSvgModal(rid) {
@@ -638,17 +663,72 @@ function openSvgModal(rid) {
   }
 }
 
-function closeImageModal() {
+function closeImageModal(fromHistory) {
   var m = document.getElementById('imageModal');
   if (m) m.style.display = 'none';
+  if (!fromHistory && window.location.hash === '#zoom') {
+    try { history.back(); } catch(e) {}
+  }
 }
+
+// =============================================
+// NAVEGAÇÃO NATIVA DO TELEFONE (BOTÃO VOLTAR)
+// =============================================
+window.addEventListener('popstate', function(event) {
+  // 1. Se o zoom de imagem/gráfico estiver aberto, fecha o zoom
+  var m = document.getElementById('imageModal');
+  if (m && m.style.display === 'flex') {
+    closeImageModal(true);
+    return;
+  }
+
+  // 2. Se estiver vendo os detalhes de uma receita, fecha e volta para a lista
+  var detailView = document.getElementById('recipes-detail-view');
+  if (detailView && detailView.classList.contains('active')) {
+    closeDetail(true);
+    return;
+  }
+
+  // 3. Se for navegação de abas no histórico
+  if (event.state && event.state.page) {
+    goPage(event.state.page, null, true);
+    return;
+  }
+
+  // 4. Fallback pelo hash
+  var hash = window.location.hash.replace('#', '');
+  if (hash === 'home' || hash === 'recipes' || hash === 'stitches' || hash === 'counter' || hash === 'more') {
+    goPage(hash, null, true);
+  } else if (!hash) {
+    goPage('home', null, true);
+  }
+});
 
 // =============================================
 // INIT
 // =============================================
 function initApp() {
   applyTheme();
-  renderPage('home');
+  
+  // Trata abertura direta via URL hash
+  var hash = window.location.hash;
+  if (hash.indexOf('#recipe-') === 0) {
+    var rid = hash.replace('#recipe-', '');
+    goPage('recipes', null, true);
+    openRecipeFromList(rid, true);
+  } else if (hash) {
+    var p = hash.replace('#', '');
+    if (['home','recipes','stitches','counter','more'].indexOf(p) >= 0) {
+      goPage(p, null, true);
+    } else {
+      goPage('home', null, true);
+    }
+  } else {
+    try {
+      history.replaceState({ page: 'home' }, '', '#home');
+    } catch(e) {}
+    renderPage('home');
+  }
 }
 
 if (document.readyState === 'loading') {
