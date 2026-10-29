@@ -1,144 +1,278 @@
 // =============================================
-// DIAGRAMAS SVG POR TIPO
+// DIAGRAMAS TÉCNICOS DE PONTOS DE CROCHÊ
+// Padrão Internacional (Craft Yarn Council / Revistas)
 // =============================================
 
+function drawCrochetCross(cx, cy, size, color) {
+  // Símbolo clássico de Ponto Baixo (sc / pb): + ou x
+  var s = size / 2;
+  return '<line x1="'+(cx-s).toFixed(1)+'" y1="'+cy.toFixed(1)+'" x2="'+(cx+s).toFixed(1)+'" y2="'+cy.toFixed(1)+'" stroke="'+color+'" stroke-width="1.8" stroke-linecap="round"/>' +
+         '<line x1="'+cx.toFixed(1)+'" y1="'+(cy-s).toFixed(1)+'" x2="'+cx.toFixed(1)+'" y2="'+(cy+s).toFixed(1)+'" stroke="'+color+'" stroke-width="1.8" stroke-linecap="round"/>';
+}
+
+function drawCrochetIncrease(cx, cy, rad, angle, color) {
+  // Símbolo clássico de Aumento em pb: V com duas cruzes
+  var s = 3.5;
+  var spread = 0.08;
+  var a1 = angle - spread;
+  var a2 = angle + spread;
+  var x1 = 140 + rad * Math.cos(a1);
+  var y1 = 130 + rad * Math.sin(a1);
+  var x2 = 140 + rad * Math.cos(a2);
+  var y2 = 130 + rad * Math.sin(a2);
+  var baseR = rad - 12;
+  var bx = 140 + baseR * Math.cos(angle);
+  var by = 130 + baseR * Math.sin(angle);
+
+  var lines = '<line x1="'+bx.toFixed(1)+'" y1="'+by.toFixed(1)+'" x2="'+x1.toFixed(1)+'" y2="'+y1.toFixed(1)+'" stroke="'+color+'" stroke-width="1.5"/>' +
+              '<line x1="'+bx.toFixed(1)+'" y1="'+by.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" stroke="'+color+'" stroke-width="1.5"/>';
+  return lines + drawCrochetCross(x1, y1, s, color) + drawCrochetCross(x2, y2, s, color);
+}
+
+function drawDoubleCrochet(cx, cy, height, color, angleDeg) {
+  // Símbolo clássico de Ponto Alto (pa / dc): T com barra transversal oblíqua (como na foto do usuário)
+  var rot = angleDeg ? ' transform="rotate('+angleDeg.toFixed(1)+' '+cx.toFixed(1)+' '+cy.toFixed(1)+')"' : '';
+  var half = height / 2;
+  var tWidth = height * 0.45;
+  return '<g'+rot+'>' +
+         '<line x1="'+cx.toFixed(1)+'" y1="'+(cy-half).toFixed(1)+'" x2="'+cx.toFixed(1)+'" y2="'+(cy+half).toFixed(1)+'" stroke="'+color+'" stroke-width="1.8"/>' +
+         '<line x1="'+(cx-tWidth/2).toFixed(1)+'" y1="'+(cy-half).toFixed(1)+'" x2="'+(cx+tWidth/2).toFixed(1)+'" y2="'+(cy-half).toFixed(1)+'" stroke="'+color+'" stroke-width="1.8"/>' +
+         '<line x1="'+(cx-3.5).toFixed(1)+'" y1="'+(cy-1.5).toFixed(1)+'" x2="'+(cx+3.5).toFixed(1)+'" y2="'+(cy+1.5).toFixed(1)+'" stroke="'+color+'" stroke-width="1.8"/>' +
+         '</g>';
+}
+
 function makeSpiralSVG(r) {
-  // Diagrama em espiral para amigurumi
-  var pts = r.parts && r.parts[0] && r.parts[0].rows ? r.parts[0].rows.length : 8;
-  var numRings = Math.min(pts, 5);
-  var svgParts = [];
-  svgParts.push('<svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:200px">');
-  svgParts.push('<rect width="220" height="220" fill="white" rx="8"/>');
-  // Anel mágico central
-  svgParts.push('<circle cx="110" cy="110" r="14" fill="none" stroke="#8b5cc4" stroke-width="2.5"/>');
-  svgParts.push('<circle cx="110" cy="110" r="5" fill="#8b5cc4"/>');
-  svgParts.push('<text x="110" y="114" text-anchor="middle" font-size="7" fill="white" font-weight="bold">⊕</text>');
-  // Anéis concêntricos representando voltas
-  var radii = [28, 44, 60, 76, 92];
-  var counts = [6, 12, 18, 24, 30];
-  var colors = ['#8b5cc4','#a67dd4','#b794e8','#c4a8f0','#d4bef8'];
-  for (var ring = 0; ring < Math.min(numRings, 5); ring++) {
-    var rad = radii[ring];
-    var count = counts[ring];
-    var color = colors[ring];
-    // Círculo guia tracejado
-    svgParts.push('<circle cx="110" cy="110" r="'+rad+'" fill="none" stroke="'+color+'" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>');
-    // Pontos ao redor
-    for (var i = 0; i < count; i++) {
-      var angle = (i / count) * 2 * Math.PI - Math.PI/2;
-      var px = 110 + rad * Math.cos(angle);
-      var py = 110 + rad * Math.sin(angle);
-      svgParts.push('<circle cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="3.5" fill="'+color+'"/>');
+  // Gráfico circular para amigurumi com símbolos autênticos de crochê
+  var svg = [];
+  svg.push('<svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;background:#ffffff">');
+  
+  // Grade sutil técnica de fundo (estilo revista)
+  svg.push('<defs>');
+  svg.push('<pattern id="grid" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M 14 0 L 0 0 0 14" fill="none" stroke="#f0ebf8" stroke-width="0.8"/></pattern>');
+  svg.push('</defs>');
+  svg.push('<rect width="280" height="280" fill="url(#grid)" rx="8"/>');
+  svg.push('<rect width="280" height="280" fill="none" stroke="#d8cef0" stroke-width="1.5" rx="8"/>');
+
+  var cx = 140, cy = 125;
+
+  // Centro: Símbolo do Anel Mágico (círculo com seta)
+  svg.push('<circle cx="'+cx+'" cy="'+cy+'" r="14" fill="none" stroke="#1f2474" stroke-width="2"/>');
+  svg.push('<circle cx="'+cx+'" cy="'+cy+'" r="3.5" fill="#1f2474"/>');
+  svg.push('<text x="'+cx+'" y="'+(cy+3.5)+'" text-anchor="middle" font-size="7" font-weight="bold" fill="#ffffff">0</text>');
+
+  // Cores técnicas por carreira (idêntico ao modelo da foto do usuário: azul, verde, amarelo, vermelho)
+  var colors = ['#1f2474', '#1f7a40', '#c2850a', '#b32424'];
+
+  // --- VOLTA 1: 6 pontos baixos (+) dentro do anel (azul marinho) ---
+  var r1 = 28;
+  for (var i = 0; i < 6; i++) {
+    var a = (i / 6) * 2 * Math.PI - Math.PI/2;
+    var x = cx + r1 * Math.cos(a);
+    var y = cy + r1 * Math.sin(a);
+    svg.push(drawCrochetCross(x, y, 6, colors[0]));
+  }
+  // Indicador Carreira 1
+  svg.push('<circle cx="'+(cx+2)+'" cy="'+(cy-r1)+'" r="6" fill="#1f2474"/>');
+  svg.push('<text x="'+(cx+2)+'" y="'+(cy-r1+3)+'" text-anchor="middle" font-size="8" font-weight="bold" fill="#fff">1</text>');
+
+  // --- VOLTA 2: 6 aumentos (V com duas cruzes) (verde) ---
+  var r2 = 50;
+  for (var j = 0; j < 6; j++) {
+    var aj = (j / 6) * 2 * Math.PI - Math.PI/2;
+    // Par de pontos baixos convergindo na mesma base (aumento)
+    var p1x = cx + r2 * Math.cos(aj - 0.12);
+    var p1y = cy + r2 * Math.sin(aj - 0.12);
+    var p2x = cx + r2 * Math.cos(aj + 0.12);
+    var p2y = cy + r2 * Math.sin(aj + 0.12);
+    var base1x = cx + r1 * Math.cos(aj);
+    var base1y = cy + r1 * Math.sin(aj);
+
+    svg.push('<line x1="'+base1x.toFixed(1)+'" y1="'+base1y.toFixed(1)+'" x2="'+p1x.toFixed(1)+'" y2="'+p1y.toFixed(1)+'" stroke="'+colors[1]+'" stroke-width="1.2"/>');
+    svg.push('<line x1="'+base1x.toFixed(1)+'" y1="'+base1y.toFixed(1)+'" x2="'+p2x.toFixed(1)+'" y2="'+p2y.toFixed(1)+'" stroke="'+colors[1]+'" stroke-width="1.2"/>');
+    svg.push(drawCrochetCross(p1x, p1y, 5.5, colors[1]));
+    svg.push(drawCrochetCross(p2x, p2y, 5.5, colors[1]));
+  }
+  // Indicador Carreira 2
+  svg.push('<circle cx="'+(cx+4)+'" cy="'+(cy-r2)+'" r="6" fill="#1f7a40"/>');
+  svg.push('<text x="'+(cx+4)+'" y="'+(cy-r2+3)+'" text-anchor="middle" font-size="8" font-weight="bold" fill="#fff">2</text>');
+
+  // --- VOLTA 3: 18 pontos (1 pb, 1 aum) x 6 (amarelo/laranja) ---
+  var r3 = 74;
+  for (var k = 0; k < 18; k++) {
+    var ak = (k / 18) * 2 * Math.PI - Math.PI/2;
+    var xk = cx + r3 * Math.cos(ak);
+    var yk = cy + r3 * Math.sin(ak);
+    if (k % 3 === 0) {
+      // Ponto simples
+      svg.push(drawCrochetCross(xk, yk, 5, colors[2]));
+    } else {
+      // Aumento
+      svg.push(drawCrochetCross(xk, yk, 5, colors[2]));
+      var baseKx = cx + r2 * Math.cos(ak);
+      var baseKy = cy + r2 * Math.sin(ak);
+      svg.push('<line x1="'+baseKx.toFixed(1)+'" y1="'+baseKy.toFixed(1)+'" x2="'+xk.toFixed(1)+'" y2="'+yk.toFixed(1)+'" stroke="'+colors[2]+'" stroke-width="1" opacity="0.7"/>');
     }
   }
-  // Seta de sentido horário
-  svgParts.push('<path d="M 135 85 Q 145 100 135 115" fill="none" stroke="#8b5cc4" stroke-width="2" marker-end="url(#arr)"/>');
-  // Legenda
-  svgParts.push('<defs><marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#8b5cc4"/></marker></defs>');
-  svgParts.push('<rect x="4" y="178" width="212" height="38" rx="4" fill="#f3e8ff"/>');
-  svgParts.push('<circle cx="16" cy="190" r="4" fill="#8b5cc4"/>');
-  svgParts.push('<text x="25" y="193" font-size="9" fill="#5a4070">ponto baixo (pb)</text>');
-  svgParts.push('<circle cx="110" cy="187" r="6" fill="none" stroke="#8b5cc4" stroke-width="2"/>');
-  svgParts.push('<circle cx="110" cy="187" r="2" fill="#8b5cc4"/>');
-  svgParts.push('<text x="120" y="193" font-size="9" fill="#5a4070">anel mágico</text>');
-  svgParts.push('<text x="8" y="210" font-size="9" fill="#5a4070">V1=6pb  V2=12pb  V3=18pb  V4=24pb  V5=30pb</text>');
-  svgParts.push('</svg>');
-  return svgParts.join('');
+  // Indicador Carreira 3
+  svg.push('<circle cx="'+(cx+6)+'" cy="'+(cy-r3)+'" r="6" fill="#c2850a"/>');
+  svg.push('<text x="'+(cx+6)+'" y="'+(cy-r3+3)+'" text-anchor="middle" font-size="8" font-weight="bold" fill="#fff">3</text>');
+
+  // --- VOLTA 4: 24 pontos (2 pb, 1 aum) x 6 (vermelho) ---
+  var r4 = 98;
+  for (var m = 0; m < 24; m++) {
+    var am = (m / 24) * 2 * Math.PI - Math.PI/2;
+    var xm = cx + r4 * Math.cos(am);
+    var ym = cy + r4 * Math.sin(am);
+    svg.push(drawCrochetCross(xm, ym, 5, colors[3]));
+  }
+  // Indicador Carreira 4
+  svg.push('<circle cx="'+(cx+8)+'" cy="'+(cy-r4)+'" r="6" fill="#b32424"/>');
+  svg.push('<text x="'+(cx+8)+'" y="'+(cy-r4+3)+'" text-anchor="middle" font-size="8" font-weight="bold" fill="#fff">4</text>');
+
+  // LEGENDA TÉCNICA OFICIAL (estilo livro de crochê)
+  svg.push('<rect x="6" y="232" width="268" height="42" rx="6" fill="#f8f5fc" stroke="#e0d6f0" stroke-width="1"/>');
+  
+  // Item 1: Ponto Baixo (+)
+  svg.push(drawCrochetCross(18, 245, 7, '#1f2474'));
+  svg.push('<text x="28" y="248" font-size="8.5" font-weight="bold" fill="#2d2438">Ponto Baixo (pb)</text>');
+  
+  // Item 2: Aumento (V)
+  svg.push('<path d="M 124 249 L 128 242 L 132 249" fill="none" stroke="#1f7a40" stroke-width="1.8"/>');
+  svg.push(drawCrochetCross(125, 242, 4, '#1f7a40'));
+  svg.push(drawCrochetCross(131, 242, 4, '#1f7a40'));
+  svg.push('<text x="138" y="248" font-size="8.5" font-weight="bold" fill="#2d2438">Aumento (2 pb juntos)</text>');
+
+  // Item 3: Anel Mágico (0)
+  svg.push('<circle cx="18" cy="263" r="5" fill="none" stroke="#1f2474" stroke-width="1.5"/>');
+  svg.push('<text x="28" y="266" font-size="8.5" font-weight="bold" fill="#2d2438">Anel Mágico</text>');
+
+  // Números de volta
+  svg.push('<text x="120" y="266" font-size="8.5" fill="#6f6580">Voltas 1 a 4 numeradas por cor</text>');
+
+  svg.push('</svg>');
+  return svg.join('');
 }
 
 function makeFlatCircleSVG() {
-  // Diagrama para tapete/porta-copo (fileiras em círculo)
-  var svgParts = [];
-  svgParts.push('<svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:200px">');
-  svgParts.push('<rect width="220" height="220" fill="white" rx="8"/>');
-  var radii = [14,30,46,62,78];
-  var labels = ['V1','V2','V3','V4','V5'];
-  var colors = ['#8b5cc4','#9b6dd4','#ab7ee0','#bb90eb','#cba2f5'];
-  for (var i = 0; i < 5; i++) {
-    svgParts.push('<circle cx="110" cy="105" r="'+radii[i]+'" fill="none" stroke="'+colors[i]+'" stroke-width="'+(i===0?3:2)+'"/>');
-    svgParts.push('<text x="'+(110+radii[i]+3)+'" y="108" font-size="9" fill="'+colors[i]+'" font-weight="'+(i===0?'bold':'normal')+'">'+labels[i]+'</text>');
+  // Gráfico técnico circular em Pontos Altos (pa) com símbolos em T transversal (idêntico à foto do usuário)
+  var svg = [];
+  svg.push('<svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;background:#ffffff">');
+  svg.push('<defs>');
+  svg.push('<pattern id="gridC" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M 14 0 L 0 0 0 14" fill="none" stroke="#f0ebf8" stroke-width="0.8"/></pattern>');
+  svg.push('</defs>');
+  svg.push('<rect width="280" height="280" fill="url(#gridC)" rx="8"/>');
+  svg.push('<rect width="280" height="280" fill="none" stroke="#d8cef0" stroke-width="1.5" rx="8"/>');
+
+  var cx = 140, cy = 125;
+
+  // Centro: Anel de correntinhas
+  svg.push('<circle cx="'+cx+'" cy="'+cy+'" r="12" fill="none" stroke="#1f2474" stroke-width="2"/>');
+  for (var c = 0; c < 6; c++) {
+    var ca = (c / 6) * 2 * Math.PI;
+    svg.push('<ellipse cx="'+(cx+12*Math.cos(ca)).toFixed(1)+'" cy="'+(cy+12*Math.sin(ca)).toFixed(1)+'" rx="3" ry="1.8" fill="none" stroke="#1f2474" stroke-width="1.2"/>');
   }
-  // Setas radiais indicando aumento
-  for (var j = 0; j < 6; j++) {
-    var ang = j * 60 * Math.PI / 180;
-    var x1 = 110 + 18 * Math.cos(ang);
-    var y1 = 105 + 18 * Math.sin(ang);
-    var x2 = 110 + 72 * Math.cos(ang);
-    var y2 = 105 + 72 * Math.sin(ang);
-    svgParts.push('<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" stroke="#d4bef8" stroke-width="1" stroke-dasharray="2,2"/>');
+
+  var colors = ['#1f2474', '#1f7a40', '#c2850a', '#b32424'];
+
+  // Volta 1: 12 Pontos Altos (T cortado)
+  var r1 = 34;
+  for (var i = 0; i < 12; i++) {
+    var a1 = (i / 12) * 2 * Math.PI - Math.PI/2;
+    var x1 = cx + r1 * Math.cos(a1);
+    var y1 = cy + r1 * Math.sin(a1);
+    var deg1 = (a1 * 180 / Math.PI) + 90;
+    svg.push(drawDoubleCrochet(x1, y1, 14, colors[0], deg1));
   }
-  svgParts.push('<circle cx="110" cy="105" r="5" fill="#8b5cc4"/>');
-  svgParts.push('<rect x="4" y="180" width="212" height="36" rx="4" fill="#f3e8ff"/>');
-  svgParts.push('<text x="8" y="196" font-size="9" fill="#5a4070">Trabalhe em espiral. Aumente 6 pts por volta.</text>');
-  svgParts.push('<text x="8" y="210" font-size="9" fill="#5a4070">Borda: 1 volta de ponto caranguejo para acabar.</text>');
-  svgParts.push('</svg>');
-  return svgParts.join('');
+  svg.push('<circle cx="'+(cx+3)+'" cy="'+(cy-r1+3)+'" r="5.5" fill="#1f2474"/>');
+  svg.push('<text x="'+(cx+3)+'" y="'+(cy-r1+6)+'" text-anchor="middle" font-size="7.5" font-weight="bold" fill="#fff">1</text>');
+
+  // Volta 2: 24 Pontos Altos com aumentos em V
+  var r2 = 62;
+  for (var j = 0; j < 24; j++) {
+    var a2 = (j / 24) * 2 * Math.PI - Math.PI/2;
+    var x2 = cx + r2 * Math.cos(a2);
+    var y2 = cy + r2 * Math.sin(a2);
+    var deg2 = (a2 * 180 / Math.PI) + 90;
+    svg.push(drawDoubleCrochet(x2, y2, 14, colors[1], deg2));
+  }
+  svg.push('<circle cx="'+(cx+5)+'" cy="'+(cy-r2+3)+'" r="5.5" fill="#1f7a40"/>');
+  svg.push('<text x="'+(cx+5)+'" y="'+(cy-r2+6)+'" text-anchor="middle" font-size="7.5" font-weight="bold" fill="#fff">2</text>');
+
+  // Volta 3: 36 Pontos Altos
+  var r3 = 90;
+  for (var k = 0; k < 32; k++) {
+    var a3 = (k / 32) * 2 * Math.PI - Math.PI/2;
+    var x3 = cx + r3 * Math.cos(a3);
+    var y3 = cy + r3 * Math.sin(a3);
+    var deg3 = (a3 * 180 / Math.PI) + 90;
+    svg.push(drawDoubleCrochet(x3, y3, 14, colors[2], deg3));
+  }
+  svg.push('<circle cx="'+(cx+7)+'" cy="'+(cy-r3+3)+'" r="5.5" fill="#c2850a"/>');
+  svg.push('<text x="'+(cx+7)+'" y="'+(cy-r3+6)+'" text-anchor="middle" font-size="7.5" font-weight="bold" fill="#fff">3</text>');
+
+  // Legenda
+  svg.push('<rect x="6" y="232" width="268" height="42" rx="6" fill="#f8f5fc" stroke="#e0d6f0" stroke-width="1"/>');
+  svg.push(drawDoubleCrochet(18, 248, 14, '#1f2474', 0));
+  svg.push('<text x="28" y="251" font-size="8.5" font-weight="bold" fill="#2d2438">= Ponto Alto (pa / dc)</text>');
+  svg.push('<ellipse cx="140" cy="248" rx="4" ry="2.5" fill="none" stroke="#1f2474" stroke-width="1.5"/>');
+  svg.push('<text x="150" y="251" font-size="8.5" font-weight="bold" fill="#2d2438">= Correntinha (corr / ch)</text>');
+  svg.push('<text x="12" y="267" font-size="8" fill="#6f6580">Símbolos técnicos oficiais (conforme gráfico padrão de revistas)</text>');
+  svg.push('</svg>');
+  return svg.join('');
 }
 
 function makeFlatGridSVG() {
-  // Diagrama para peças retangulares (tapete quadrado, descanso)
-  var svgParts = [];
-  svgParts.push('<svg viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:190px">');
-  svgParts.push('<rect width="220" height="200" fill="white" rx="8"/>');
-  var rows = 5, cols = 7;
-  var startX = 20, startY = 20, cw = 26, ch = 22;
-  var rowColors = ['#8b5cc4','#9b6dd4','#ab7ee0','#bb90eb','#cba2f5'];
-  for (var r2 = 0; r2 < rows; r2++) {
-    // Row label
-    svgParts.push('<text x="8" y="'+(startY + r2*ch + ch/2 + 4)+'" font-size="9" fill="#8b5cc4" font-weight="bold">V'+(r2+1)+'</text>');
-    for (var c = 0; c < cols; c++) {
-      var x = startX + c * cw;
-      var y = startY + r2 * ch;
-      // Draw stitch symbol (T shape for dc/pa)
-      svgParts.push('<line x1="'+(x+cw/2)+'" y1="'+y+'" x2="'+(x+cw/2)+'" y2="'+(y+ch)+'" stroke="'+rowColors[r2]+'" stroke-width="2"/>');
-      svgParts.push('<line x1="'+(x+4)+'" y1="'+(y+ch*0.3)+'" x2="'+(x+cw-4)+'" y2="'+(y+ch*0.3)+'" stroke="'+rowColors[r2]+'" stroke-width="2"/>');
+  // Gráfico linear em carreiras de ida e volta (Ponto Alto com correntes de subida)
+  var svg = [];
+  svg.push('<svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;background:#ffffff">');
+  svg.push('<defs>');
+  svg.push('<pattern id="gridG" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M 14 0 L 0 0 0 14" fill="none" stroke="#f0ebf8" stroke-width="0.8"/></pattern>');
+  svg.push('</defs>');
+  svg.push('<rect width="280" height="240" fill="url(#gridG)" rx="8"/>');
+  svg.push('<rect width="280" height="240" fill="none" stroke="#d8cef0" stroke-width="1.5" rx="8"/>');
+
+  var colors = ['#1f2474', '#1f7a40', '#c2850a', '#b32424'];
+
+  // Correntes de base
+  var baseY = 190;
+  svg.push('<text x="12" y="'+(baseY+3)+'" font-size="8.5" font-weight="bold" fill="#1f2474">Base</text>');
+  for (var c = 0; c < 14; c++) {
+    svg.push('<ellipse cx="'+(48+c*16)+'" cy="'+baseY+'" rx="4.5" ry="2.8" fill="none" stroke="#1f2474" stroke-width="1.5"/>');
+  }
+
+  // 4 Carreiras de Ponto Alto (T cortado)
+  var rowY = [160, 126, 92, 58];
+  for (var r = 0; r < 4; r++) {
+    var y = rowY[r];
+    var col = colors[r];
+    svg.push('<circle cx="22" cy="'+y+'" r="6" fill="'+col+'"/>');
+    svg.push('<text x="22" y="'+(y+3)+'" text-anchor="middle" font-size="8" font-weight="bold" fill="#fff">'+(r+1)+'</text>');
+    
+    // 3 Correntinhas de subida no início da carreira
+    for (var ch = 0; ch < 3; ch++) {
+      svg.push('<ellipse cx="38" cy="'+(y+10 - ch*7)+'" rx="2.5" ry="2" fill="none" stroke="'+col+'" stroke-width="1.2"/>');
+    }
+
+    // Pontos altos
+    for (var colIdx = 0; colIdx < 13; colIdx++) {
+      var x = 56 + colIdx * 16;
+      svg.push(drawDoubleCrochet(x, y, 16, col, 0));
     }
   }
-  // Borda indicativa
-  svgParts.push('<rect x="'+(startX-4)+'" y="'+(startY-4)+'" width="'+(cols*cw+8)+'" height="'+(rows*ch+8)+'" fill="none" stroke="#8b5cc4" stroke-width="1.5" stroke-dasharray="4,2" rx="2"/>');
-  svgParts.push('<rect x="4" y="145" width="212" height="50" rx="4" fill="#f3e8ff"/>');
-  svgParts.push('<line x1="14" y1="160" x2="14" y2="178" stroke="#8b5cc4" stroke-width="2"/>');
-  svgParts.push('<line x1="10" y1="165" x2="18" y2="165" stroke="#8b5cc4" stroke-width="2"/>');
-  svgParts.push('<text x="24" y="168" font-size="9" fill="#5a4070">= Ponto alto (pa) / Double Crochet</text>');
-  svgParts.push('<text x="8" y="185" font-size="9" fill="#5a4070">Vire o trabalho ao final de cada fileira.</text>');
-  svgParts.push('<text x="8" y="194" font-size="9" fill="#5a4070">3 correntes para subir = 1 ponto alto.</text>');
-  svgParts.push('</svg>');
-  return svgParts.join('');
+
+  // Legenda
+  svg.push('<rect x="6" y="208" width="268" height="26" rx="4" fill="#f8f5fc" stroke="#e0d6f0" stroke-width="1"/>');
+  svg.push(drawDoubleCrochet(18, 221, 12, '#1f2474', 0));
+  svg.push('<text x="28" y="224" font-size="8.5" font-weight="bold" fill="#2d2438">Ponto Alto (pa)</text>');
+  svg.push('<ellipse cx="120" cy="221" rx="4" ry="2.5" fill="none" stroke="#1f2474" stroke-width="1.5"/>');
+  svg.push('<text x="130" y="224" font-size="8.5" font-weight="bold" fill="#2d2438">Correntinha (corr)</text>');
+
+  svg.push('</svg>');
+  return svg.join('');
 }
 
 function makeFlatSVG() {
-  // Diagrama genérico em fileiras
-  var svgParts = [];
-  svgParts.push('<svg viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:190px">');
-  svgParts.push('<rect width="220" height="200" fill="white" rx="8"/>');
-  // Base chain
-  var chainY = 170;
-  svgParts.push('<text x="8" y="'+chainY+'" font-size="9" fill="#8b5cc4" font-weight="bold">Base:</text>');
-  for (var c2 = 0; c2 < 12; c2++) {
-    svgParts.push('<ellipse cx="'+(38+c2*14)+'" cy="'+(chainY-4)+'" rx="5" ry="4" fill="none" stroke="#8b5cc4" stroke-width="1.5"/>');
-  }
-  // Rows of stitches (pb = X symbol)
-  var rowY = [150, 128, 106, 84];
-  var rowColors2 = ['#8b5cc4','#9b6dd4','#ab7ee0','#bb90eb'];
-  for (var row = 0; row < 4; row++) {
-    svgParts.push('<text x="8" y="'+(rowY[row]+4)+'" font-size="9" fill="'+rowColors2[row]+'" font-weight="bold">V'+(row+1)+'</text>');
-    for (var col = 0; col < 11; col++) {
-      var cx2 = 38 + col * 14;
-      var cy2 = rowY[row] - 4;
-      // X symbol for pb
-      svgParts.push('<line x1="'+(cx2-4)+'" y1="'+(cy2-4)+'" x2="'+(cx2+4)+'" y2="'+(cy2+4)+'" stroke="'+rowColors2[row]+'" stroke-width="2"/>');
-      svgParts.push('<line x1="'+(cx2+4)+'" y1="'+(cy2-4)+'" x2="'+(cx2-4)+'" y2="'+(cy2+4)+'" stroke="'+rowColors2[row]+'" stroke-width="2"/>');
-    }
-  }
-  svgParts.push('<rect x="4" y="6" width="212" height="36" rx="4" fill="#f3e8ff"/>');
-  // X legend
-  svgParts.push('<line x1="14" y1="18" x2="22" y2="26" stroke="#8b5cc4" stroke-width="2"/>');
-  svgParts.push('<line x1="22" y1="18" x2="14" y2="26" stroke="#8b5cc4" stroke-width="2"/>');
-  svgParts.push('<text x="28" y="26" font-size="9" fill="#5a4070">= Ponto Baixo (pb) / Single Crochet (sc)</text>');
-  svgParts.push('<ellipse cx="14" cy="35" rx="5" ry="4" fill="none" stroke="#8b5cc4" stroke-width="1.5"/>');
-  svgParts.push('<text x="24" y="39" font-size="9" fill="#5a4070">= Corrente (ch) / Chain</text>');
-  svgParts.push('</svg>');
-  return svgParts.join('');
+  return makeSpiralSVG({parts:[{rows:[1,2,3,4,5]}]});
 }
 
 function getDiagram(r) {
@@ -146,6 +280,6 @@ function getDiagram(r) {
     case 'spiral':      return makeSpiralSVG(r);
     case 'flat_circle': return makeFlatCircleSVG();
     case 'flat_grid':   return makeFlatGridSVG();
-    default:            return makeFlatSVG();
+    default:            return makeSpiralSVG(r);
   }
 }

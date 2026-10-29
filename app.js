@@ -292,12 +292,12 @@ function showDetail(rid) {
   html += '<div class="card card-sm" style="margin-bottom:0;padding:8px;text-align:center">';
   html += '<div style="font-weight:700;font-size:.8rem;color:var(--tx);margin-bottom:6px">📐 Gráfico dos Pontos</div>';
   if (r.diagramImg) {
-    html += '<img src="'+r.diagramImg+'" alt="Diagrama: '+r.n+'" loading="lazy" onclick="openImageModal(\''+r.diagramImg+'\')" '
+    html += '<img src="'+r.diagramImg+'" alt="Gráfico: '+r.n+'" loading="lazy" onclick="openImageModal(\''+r.diagramImg+'\')" '
          + 'style="width:100%;border-radius:8px;object-fit:contain;height:170px;background:#fff;cursor:pointer;border:1px solid var(--bd)">';
     html += '<p style="font-size:.72rem;color:var(--ac);font-weight:600;margin-top:6px;cursor:pointer" onclick="openImageModal(\''+r.diagramImg+'\')">🔍 Toque p/ dar zoom</p>';
   } else {
-    html += '<div style="border-radius:8px;overflow:hidden;border:1px solid var(--bd);height:170px;display:flex;align-items:center;justify-content:center;background:#fff">'+diag+'</div>';
-    html += '<p style="font-size:.72rem;color:var(--tx3);margin-top:6px">Diagrama vetorial</p>';
+    html += '<div style="border-radius:8px;overflow:hidden;border:1px solid var(--bd);height:170px;display:flex;align-items:center;justify-content:center;background:#fff;cursor:pointer" onclick="openSvgModal(\''+r.id+'\')">'+diag+'</div>';
+    html += '<p style="font-size:.72rem;color:var(--ac);font-weight:600;margin-top:6px;cursor:pointer" onclick="openSvgModal(\''+r.id+'\')">🔍 Toque p/ dar zoom</p>';
   }
   html += '</div>';
   html += '</div>';
@@ -605,12 +605,37 @@ function saveNoteLocal(rid) {
   if (el) setNotes(rid, el.value);
 }
 
-function openImageModal(src) {
+function openImageModal(src, isSvgHtml) {
   var m = document.getElementById('imageModal');
   var mi = document.getElementById('modalImage');
-  if (m && mi) {
-    mi.src = src;
-    m.style.display = 'flex';
+  var mc = document.getElementById('modalSvgContainer');
+  if (!m) return;
+  if (isSvgHtml) {
+    if (mi) mi.style.display = 'none';
+    if (!mc) {
+      mc = document.createElement('div');
+      mc.id = 'modalSvgContainer';
+      mc.style.cssText = 'width:90vw;max-width:380px;height:90vw;max-height:380px;background:#fff;border-radius:12px;padding:8px;box-shadow:0 8px 30px rgba(0,0,0,0.6)';
+      var wrapper = m.querySelector('div');
+      if (wrapper) wrapper.insertBefore(mc, wrapper.querySelector('span'));
+    }
+    mc.style.display = 'block';
+    mc.innerHTML = isSvgHtml;
+  } else {
+    if (mc) mc.style.display = 'none';
+    if (mi) {
+      mi.style.display = 'block';
+      mi.src = src;
+    }
+  }
+  m.style.display = 'flex';
+}
+
+function openSvgModal(rid) {
+  var r = RECS.filter(function(x){ return x.id===rid; })[0];
+  if(r) {
+    var diag = getDiagram(r);
+    openImageModal(null, diag);
   }
 }
 

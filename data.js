@@ -4,10 +4,7 @@
 
 var RECS = [
   {
-    id:"esfera", videoTitle:"Esfera Perfeita para Amigurumi (Passo a Passo)", videoUrl:"https://www.youtube.com/results?search_query=como+fazer+esfera+perfeita+amigurumi+passo+a+passo", n:"Esfera Base (Amigurumi)", emoji:"🔵", lvl:"Iniciante", cat:"Amigurumi",
-    stars:1, tempo:45, tags:["base","amigurumi","esfera"],
-    desc:"A base de quase todo amigurumi. Aprenda esta primeiro antes de qualquer outra receita.",
-    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Amigurumi_3.jpg/320px-Amigurumi_3.jpg",
+    assets/foto-esfera.jpg,
     diagramType:"spiral",
     mat:["Fio de algodão ou acrílico 100g","Agulha de crochê 2,5mm (uma numeração abaixo da indicada no fio)","Enchimento (fibra siliconada)","Marcador de ponto","Agulha de tapeçaria"],
     parts:[
@@ -25,10 +22,7 @@ var RECS = [
     metrosEst:40
   },
   {
-    id:"chaveiro", videoTitle:"Chaveiro Bolinha de Crochê Amigurumi", videoUrl:"https://www.youtube.com/results?search_query=chaveiro+bolinha+amigurumi+croche", n:"Chaveiro Bolinha", emoji:"🔑", lvl:"Iniciante", cat:"Amigurumi",
-    stars:1, tempo:30, tags:["chaveiro","presente","rápido"],
-    desc:"Peça pequena e rápida, ótima para lembrancinhas e presentes. Usa a técnica da esfera menor.",
-    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Amigurumi_3.jpg/160px-Amigurumi_3.jpg",
+    assets/foto-chaveiro.jpg,
     diagramType:"spiral",
     mat:["Fio fino de algodão 30g","Agulha 2mm a 2,5mm","Argola de chaveiro","Enchimento","Olhos de segurança 6mm ou bordado em fio"],
     parts:[
@@ -49,10 +43,7 @@ var RECS = [
     metrosEst:20
   },
   {
-    id:"chocalho", videoTitle:"Chocalho para Bebê em Amigurumi Fácil", videoUrl:"https://www.youtube.com/results?search_query=chocalho+bebe+croche+amigurumi", n:"Chocalho de Bebê", emoji:"🍼", lvl:"Iniciante", cat:"Bebê",
-    stars:2, tempo:90, tags:["bebê","chocalho","segurança"],
-    desc:"Esfera com guizo dentro e cabo simples. Presente perfeito para recém-nascidos.",
-    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Amigurumi_3.jpg/320px-Amigurumi_3.jpg",
+    assets/foto-chocalho.jpg,
     diagramType:"spiral",
     mat:["Fio de algodão macio 80g","Agulha 2,5mm","Bolinha de guizo grande ou cápsula de chocalho","Enchimento","Anel de madeira (opcional)"],
     parts:[
@@ -73,10 +64,7 @@ var RECS = [
     metrosEst:60
   },
   {
-    id:"ursinho", videoTitle:"Ursinho Amigurumi Clássico Passo a Passo", videoUrl:"https://www.youtube.com/results?search_query=ursinho+amigurumi+croche+passo+a+passo", n:"Ursinho Simples", emoji:"🐻", lvl:"Intermediário", cat:"Amigurumi",
-    stars:3, tempo:180, tags:["urso","amigurumi","presente"],
-    desc:"Cabeça e corpo em esferas, mais orelhas, braços e pernas. Clássico e adorável.",
-    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Amigurumi_teddy.jpg/320px-Amigurumi_teddy.jpg",
+    assets/foto-ursinho.jpg,
     diagramType:"spiral",
     mat:["Fio de algodão 150g","Agulha 2,5mm","Enchimento","Olhos de segurança 6 a 8mm (ou bordado)","Agulha de tapeçaria","Alfinetes para posicionar"],
     parts:[
@@ -107,10 +95,7 @@ var RECS = [
     metrosEst:120
   },
   {
-    id:"gatinho", videoTitle:"Gatinho de Crochê Amigurumi para Iniciantes", videoUrl:"https://www.youtube.com/results?search_query=gatinho+amigurumi+croche+passo+a+passo", n:"Gatinho Amigurumi", emoji:"🐱", lvl:"Intermediário", cat:"Amigurumi",
-    stars:3, tempo:210, tags:["gato","amigurumi","fofo"],
-    desc:"Orelhas pontudas, bigodes bordados e rabinho! Um clássico do amigurumi muito querido.",
-    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Amigurumi_cat.jpg/320px-Amigurumi_cat.jpg",
+    assets/foto-gatinho.jpg,
     diagramType:"spiral",
     mat:["Fio de algodão cor principal 120g","Fio rosa para orelha interna 20g","Agulha 2,5mm","Enchimento","Olhos de segurança 8mm","Agulha de tapeçaria","Fio preto para bigodes"],
     parts:[
@@ -158,10 +143,7 @@ var RECS = [
     metrosEst:140
   },
   {
-    id:"coelho", videoTitle:"Coelhinho da Páscoa em Amigurumi", videoUrl:"https://www.youtube.com/results?search_query=coelhinho+amigurumi+croche+passo+a+passo", n:"Coelhinho da Páscoa", emoji:"🐰", lvl:"Intermediário", cat:"Amigurumi",
-    stars:3, tempo:240, tags:["coelho","páscoa","amigurumi"],
-    desc:"Orelhas longas características e um rabinho fofinho. Ótimo para a Páscoa ou como presente.",
-    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Amigurumi_teddy.jpg/320px-Amigurumi_teddy.jpg",
+    assets/foto-coelho.jpg,
     diagramType:"spiral",
     mat:["Fio de algodão branco ou colorido 150g","Agulha 2,5mm","Enchimento","Olhos de segurança 8mm","Agulha de tapeçaria"],
     parts:[
@@ -197,10 +179,7 @@ var RECS = [
     metrosEst:150
   },
   {
-    id:"pinguim", videoTitle:"Pinguim de Crochê Amigurumi Passo a Passo", videoUrl:"https://www.youtube.com/results?search_query=pinguim+amigurumi+croche+passo+a+passo", n:"Pinguim Amigurumi", emoji:"🐧", lvl:"Iniciante", cat:"Amigurumi",
-    stars:2, tempo:120, tags:["pinguim","preto","branco","amigurumi"],
-    desc:"Simpático pinguim preto e branco com barriga redonda. Projeto rápido e encantador!",
-    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Amigurumi_3.jpg/320px-Amigurumi_3.jpg",
+    assets/foto-pinguim.jpg,
     diagramType:"spiral",
     mat:["Fio preto 100g","Fio branco 50g","Fio laranja 20g","Agulha 2,5mm","Enchimento","Olhos de segurança 8mm"],
     parts:[
@@ -241,10 +220,7 @@ var RECS = [
     metrosEst:100
   },
   {
-    id:"polvo", videoTitle:"Polvo de Crochê Amigurumi (Tentáculos Espirais)", videoUrl:"https://www.youtube.com/results?search_query=polvo+amigurumi+croche+passo+a+passo", n:"Polvo Colorido", emoji:"🐙", lvl:"Iniciante", cat:"Amigurumi",
-    stars:2, tempo:90, tags:["polvo","tentáculos","rápido"],
-    desc:"Cabeça redonda com 8 tentáculos. Muito rápido de fazer e super divertido!",
-    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Amigurumi_3.jpg/320px-Amigurumi_3.jpg",
+    assets/foto-polvo.jpg,
     diagramType:"spiral",
     mat:["Fio colorido de algodão 80g","Agulha 2,5mm","Enchimento","Olhos de segurança 10mm","Agulha de tapeçaria"],
     parts:[
@@ -272,10 +248,7 @@ var RECS = [
     metrosEst:80
   },
   {
-    id:"sapatinho", videoTitle:"Sapatinho de Bebê em Crochê Fácil", videoUrl:"https://www.youtube.com/results?search_query=sapatinho+de+croche+para+bebe+iniciante", n:"Sapatinho de Bebê", emoji:"👟", lvl:"Intermediário", cat:"Bebê",
-    stars:3, tempo:120, tags:["bebê","sapato","presente","enxoval"],
-    desc:"Sapatinho fofo para recém-nascido. Presente carinhoso para chá de bebê.",
-    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Baby_bootie_knit.jpg/320px-Baby_bootie_knit.jpg",
+    assets/foto-sapatinho.jpg,
     diagramType:"flat",
     mat:["Fio de algodão macio antialérgico 80g","Agulha 2,5mm","Agulha de tapeçaria","Fita de cetim 50cm (opcional)"],
     parts:[
@@ -303,10 +276,7 @@ var RECS = [
     metrosEst:60
   },
   {
-    id:"touquinha", videoTitle:"Touca de Crochê para Bebê Recém-Nascido", videoUrl:"https://www.youtube.com/results?search_query=touca+croche+bebe+recem+nascido", n:"Touquinha de Bebê", emoji:"👶", lvl:"Iniciante", cat:"Bebê",
-    stars:2, tempo:60, tags:["bebê","touca","enxoval","inverno"],
-    desc:"Touquinha quentinha para recém-nascido. Rápida de fazer e muito necessária no enxoval.",
-    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Amigurumi_3.jpg/320px-Amigurumi_3.jpg",
+    assets/foto-touquinha.jpg,
     diagramType:"spiral",
     mat:["Fio de algodão macio ou lã fina 100g","Agulha 2,5mm","Agulha de tapeçaria"],
     parts:[
@@ -325,10 +295,7 @@ var RECS = [
     metrosEst:50
   },
   {
-    id:"tapete", videoTitle:"Tapete Redondo de Crochê Fácil em Espiral", videoUrl:"https://www.youtube.com/results?search_query=tapete+redondo+de+croche+facil+passo+a+passo", n:"Tapetinho Redondo", emoji:"🔴", lvl:"Iniciante", cat:"Casa",
-    stars:2, tempo:180, tags:["tapete","casa","decoração","espiral"],
-    desc:"Tapete básico em espiral contínua. Use fio mais grosso e agulha maior para ir rápido!",
-    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Crochet_circle.jpg/320px-Crochet_circle.jpg",
+    assets/foto-tapete.jpg,
     diagramType:"flat_circle",
     mat:["Fio grosso 4mm ou fio de malha 200g","Agulha 5mm a 6mm","Tesoura","Agulha de tapeçaria"],
     parts:[
@@ -345,10 +312,7 @@ var RECS = [
     metrosEst:200
   },
   {
-    id:"portacopo", videoTitle:"Porta-Copos Redondo em Crochê", videoUrl:"https://www.youtube.com/results?search_query=porta+copos+croche+redondo+passo+a+passo", n:"Porta-Copo Redondo", emoji:"☕", lvl:"Iniciante", cat:"Casa",
-    stars:1, tempo:45, tags:["porta-copo","casa","útil","rápido"],
-    desc:"Porta-copo em crochê, rápido e útil. Ótimo para presentear e para praticar pontos novos.",
-    img:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Crochet_doily.jpg/320px-Crochet_doily.jpg",
+    assets/foto-portacopo.jpg,
     diagramType:"flat_circle",
     mat:["Fio de algodão colorido 40g","Agulha 2,5mm a 3mm","Agulha de tapeçaria"],
     parts:[
@@ -385,7 +349,7 @@ var RECS = [
     metrosEst:15
   },
   {
-    id:"bolsinha", videoTitle:"Bolsinha de Crochê com Alça Fácil", videoUrl:"https://www.youtube.com/results?search_query=bolsinha+de+croche+facil+com+alca", n:"Bolsinha com Alça", emoji:"👜", lvl:"Intermediário", cat:"Acessórios",
+    id:"bolsinha", diagramImg:"assets/grafico-oval-sapatinho.jpg", videoTitle:"Bolsinha de Crochê com Alça Fácil", videoUrl:"https://www.youtube.com/results?search_query=bolsinha+de+croche+facil+com+alca", n:"Bolsinha com Alça", emoji:"👜", lvl:"Intermediário", cat:"Acessórios",
     stars:3, tempo:300, tags:["bolsa","acessório","presente"],
     desc:"Bolsinha pequena com alça de corrente. Prática para usar e linda para presentear.",
     img:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Crochet_doily.jpg/320px-Crochet_doily.jpg",
