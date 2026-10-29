@@ -427,8 +427,7 @@ function renderTutorials() {
   var el = document.getElementById('tutContent');
   if(!el) return;
   el.innerHTML = TUTORIALS.map(function(t){
-    var cleanTitle = t.title.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
-    var ytQuery = encodeURIComponent(cleanTitle + ' croche passo a passo');
+    var ytQuery = encodeURIComponent(t.title + ' croche passo a passo');
     return '<div class="card card-sm" style="margin-bottom:10px">'+
       '<button class="accordion-btn" onclick="toggleAcc(this)">'+t.title+'<span class="arrow">▼</span></button>'+
       '<div class="accordion-body">'+
@@ -647,7 +646,13 @@ function closeImageModal() {
 // =============================================
 // INIT
 // =============================================
-document.addEventListener('DOMContentLoaded', function() {
+function initApp() {
   applyTheme();
   renderPage('home');
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
