@@ -278,27 +278,43 @@ function showDetail(rid) {
   html += '</div>';
 
   // === VISUAL SECTION: Photo + Diagram ===
-  html += '<div class="section-title">📸 Visual e Gráfico da Receita</div>';
+  html += '<div class="section-title">📸 Fotos e Gráfico da Receita</div>';
   html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">';
-  // Photo
-  html += '<div>';
-  html += '<img src="'+r.img+'" alt="Foto: '+r.n+'" loading="lazy" onclick="openImageModal(\''+r.img+'\')" '
-       + 'style="width:100%;border-radius:10px;object-fit:cover;height:180px;background:var(--bg2);cursor:pointer;border:1px solid var(--bd)" '
-       + 'onerror="this.outerHTML=\'<div style=&quot;background:var(--bg2);border-radius:10px;height:180px;display:flex;align-items:center;justify-content:center;font-size:3rem&quot;>'+r.emoji+'</div>\'">';
-  html += '<p style="text-align:center;font-size:.75rem;color:var(--tx3);margin-top:4px">🔍 Toque para ampliar foto</p>';
+  // Photo (Resultado Final)
+  html += '<div class="card card-sm" style="margin-bottom:0;padding:8px;text-align:center">';
+  html += '<div style="font-weight:700;font-size:.8rem;color:var(--tx);margin-bottom:6px">📸 Peça Pronta</div>';
+  html += '<img src="'+r.img+'" alt="Resultado: '+r.n+'" loading="lazy" onclick="openImageModal(\''+r.img+'\')" '
+       + 'style="width:100%;border-radius:8px;object-fit:cover;height:170px;background:var(--bg2);cursor:pointer;border:1px solid var(--bd)" '
+       + 'onerror="this.outerHTML=\'<div style=&quot;background:var(--bg2);border-radius:8px;height:170px;display:flex;align-items:center;justify-content:center;font-size:3rem&quot;>'+r.emoji+'</div>\'">';
+  html += '<p style="font-size:.72rem;color:var(--ac);font-weight:600;margin-top:6px;cursor:pointer" onclick="openImageModal(\''+r.img+'\')">🔍 Toque p/ ampliar</p>';
   html += '</div>';
-  // Diagram
-  html += '<div>';
+  // Diagram (Gráfico / Diagrama de pontos)
+  html += '<div class="card card-sm" style="margin-bottom:0;padding:8px;text-align:center">';
+  html += '<div style="font-weight:700;font-size:.8rem;color:var(--tx);margin-bottom:6px">📐 Gráfico dos Pontos</div>';
   if (r.diagramImg) {
     html += '<img src="'+r.diagramImg+'" alt="Diagrama: '+r.n+'" loading="lazy" onclick="openImageModal(\''+r.diagramImg+'\')" '
-         + 'style="width:100%;border-radius:10px;object-fit:cover;height:180px;background:#fff;cursor:pointer;border:1px solid var(--bd)">';
-    html += '<p style="text-align:center;font-size:.75rem;color:var(--tx3);margin-top:4px">📐 Gráfico (toque p/ zoom)</p>';
+         + 'style="width:100%;border-radius:8px;object-fit:contain;height:170px;background:#fff;cursor:pointer;border:1px solid var(--bd)">';
+    html += '<p style="font-size:.72rem;color:var(--ac);font-weight:600;margin-top:6px;cursor:pointer" onclick="openImageModal(\''+r.diagramImg+'\')">🔍 Toque p/ dar zoom</p>';
   } else {
-    html += '<div style="border-radius:10px;overflow:hidden;border:1px solid var(--bd);height:180px;display:flex;align-items:center;justify-content:center;background:#fff">'+diag+'</div>';
-    html += '<p style="text-align:center;font-size:.75rem;color:var(--tx3);margin-top:4px">📐 Diagrama de pontos</p>';
+    html += '<div style="border-radius:8px;overflow:hidden;border:1px solid var(--bd);height:170px;display:flex;align-items:center;justify-content:center;background:#fff">'+diag+'</div>';
+    html += '<p style="font-size:.72rem;color:var(--tx3);margin-top:6px">Diagrama vetorial</p>';
   }
   html += '</div>';
   html += '</div>';
+
+  // Video aula no YouTube
+  if (r.videoUrl) {
+    html += '<div class="card" style="background:linear-gradient(135deg, rgba(230,0,0,0.06) 0%, rgba(139,92,196,0.08) 100%);border:1.5px solid #ffccd4;padding:14px;margin-bottom:16px">';
+    html += '<div style="display:flex;align-items:center;gap:12px">';
+    html += '<div style="width:44px;height:44px;border-radius:12px;background:#e60000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:0 3px 10px rgba(230,0,0,0.3)">▶</div>';
+    html += '<div style="flex:1;min-width:0">';
+    html += '<div style="font-weight:700;font-size:.95rem;color:var(--tx)">Vídeo Passo a Passo no YouTube</div>';
+    html += '<div style="font-size:.8rem;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(r.videoTitle || 'Aprenda assistindo a vídeo aula')+'</div>';
+    html += '</div></div>';
+    html += '<a href="'+r.videoUrl+'" target="_blank" rel="noopener" class="btn" style="background:#e60000;color:#fff;width:100%;margin-top:12px;justify-content:center;text-decoration:none;font-weight:700;padding:11px;box-shadow:0 2px 8px rgba(230,0,0,0.25)">';
+    html += '📺 Assistir vídeo aula desta receita</a>';
+    html += '</div>';
+  }
 
   // Warning
   if(r.warn) {
@@ -411,12 +427,18 @@ function renderTutorials() {
   var el = document.getElementById('tutContent');
   if(!el) return;
   el.innerHTML = TUTORIALS.map(function(t){
+    var cleanTitle = t.title.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
+    var ytQuery = encodeURIComponent(cleanTitle + ' croche passo a passo');
     return '<div class="card card-sm" style="margin-bottom:10px">'+
       '<button class="accordion-btn" onclick="toggleAcc(this)">'+t.title+'<span class="arrow">▼</span></button>'+
       '<div class="accordion-body">'+
       t.steps.map(function(s,i){
         return '<div class="tutorial-step"><div class="tutorial-num">'+(i+1)+'</div><div class="tutorial-text">'+s+'</div></div>';
       }).join('')+
+      '<div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--bd)">'+
+      '<a href="https://www.youtube.com/results?search_query='+ytQuery+'" target="_blank" rel="noopener" class="btn btn-sm" style="background:#e60000;color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-weight:600">'+
+      '▶ Ver vídeo aula desta técnica no YouTube</a>'+
+      '</div>'+
       '</div></div>';
   }).join('');
 }
